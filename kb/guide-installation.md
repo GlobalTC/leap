@@ -16,7 +16,7 @@
 - [Manual Workspace Setup (Reference)](#manual-workspace-setup-reference)
   - [1. Create your Knowledge Base](#1-create-your-knowledge-base)
   - [2. Install check-md](#2-install-check-md)
-  - [3. Configure QMD Semantic Search](#3-configure-qmd-semantic-search)
+  - [3. (Optional) Configure QMD Semantic Search](#3-optional-configure-qmd-semantic-search)
 - [Note for Windows Users](#note-for-windows-users)
   - [Git Bash (Recommended)](#git-bash-recommended)
   - [Windows Subsystem for Linux (WSL)](#windows-subsystem-for-linux-wsl)
@@ -195,7 +195,7 @@ cp -R /path/to/extracted/leap leap
 
 ## Interactive Workspace Setup
 
-Once you have instantiated the `leap/` folder via Path A or Path B, you can configure your entire workspace—creating your empty `kb/` directory, installing the `check-md` markdown linter, automatically generating configuration files for your preferred AI agents, and configuring QMD semantic search—using the interactive bootstrapper:
+Once you have instantiated the `leap/` folder via Path A or Path B, you can configure your entire workspace—creating your empty `kb/` directory, installing the `check-md` markdown linter, automatically generating configuration files for your preferred AI agents, and optionally configuring QMD semantic search—using the interactive bootstrapper:
 
 ```bash
 bash leap/scripts/setup-leap.sh
@@ -245,7 +245,9 @@ Verify that the linter was successfully installed:
 check-md --help
 ```
 
-### 3. Configure QMD Semantic Search
+### 3. (Optional) Configure QMD Semantic Search
+
+This step is optional. LEAP works fully without QMD, and setup completes even if QMD configuration is skipped or fails.
 
 If you want to enable on-device semantic search over your project's markdown documents so that AI agents can query your knowledge base programmatically, run the QMD configuration script:
 

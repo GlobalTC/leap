@@ -89,9 +89,11 @@ assert_exit_code "Setup with --qmd exits with 0" 0 "$code"
 assert_exists "qmd_args.log" "qmd_args.log"
 assert_contains "qmd-config was invoked with --remove-legacy" "$(cat qmd_args.log)" "--remove-legacy"
 
-# Test 5: Interactive default behavior (pressing Enter defaults to "yes" for standard options)
+# Test 5: Interactive default behavior (pressing Enter defaults to "yes" for standard options,
+# but "no" for the optional QMD configurator)
 echo "Testing setup-leap.sh interactive defaults (piping empty input)..."
 # Clean up files first
+rm -f qmd_args.log
 rm -f CLAUDE.md GEMINI.md .cursorrules .github/copilot-instructions.md .gitignore .git/hooks/pre-commit
 # Create an empty .gitignore and pre-commit hook destination directory
 touch .gitignore
@@ -110,6 +112,7 @@ assert_exists "CLAUDE.md" "CLAUDE.md"
 assert_exists "GEMINI.md" "GEMINI.md"
 assert_exists ".cursorrules" ".cursorrules"
 assert_exists ".github/copilot-instructions.md" ".github/copilot-instructions.md"
+assert_not_exists "qmd_args.log (QMD defaults to no)" "qmd_args.log"
 
 # Test 6: Non-interactive username configuration via LEAP_USER env var
 echo "Testing setup-leap.sh username config via LEAP_USER env var (non-interactive)..."
@@ -147,6 +150,22 @@ set -e
 assert_exit_code "Interactive setup with custom username exits with 0" 0 "$code"
 cfg_user=$(git config leap.user || echo "")
 assert_equals "Saves sanitized custom username from interactive prompt" "custom.user_7" "$cfg_user"
+
+# Test 9: A failed QMD configuration is a warning only, not a setup failure
+echo "Testing setup-leap.sh --qmd when qmd-config fails..."
+cat > scripts/qmd/qmd-config << 'EOF'
+#!/usr/bin/env bash
+exit 1
+EOF
+chmod +x scripts/qmd/qmd-config
+
+set +e
+out=$(bash scripts/setup-leap.sh --yes --qmd < /dev/null 2>&1)
+code=$?
+set -e
+assert_exit_code "Setup with failing optional QMD still exits with 0" 0 "$code" "$out"
+assert_contains "Failed QMD prints retry command" "$out" "qmd-config --repo-root"
+assert_absent "Failed QMD does not mark setup incomplete" "$out" "Setup Incomplete"
 
 echo ""
 echo "Test summary: PASS=$PASS FAIL=$FAIL"
