@@ -48,9 +48,9 @@ A fast, Python-based CLI tool located in `/check-md` that ensures your documenta
 - **Rule 4: Nested Code Blocks**: Correctly escape and nest code block formatting when writing documentation that demonstrates code examples.
 - **Rule 5: Label-Value Sequences**: Use HTML `<br>` tags rather than implicit spaces or empty lines to group contiguous bold-prefixed metadata lists (e.g., Status, Author, Date).
 
-### 3. Shared QMD Indexing Scripts
+### 3. Shared QMD Indexing Scripts (Optional)
 
-On-device semantic search tooling located in `/scripts/qmd` utilizing [QMD](https://github.com/tobi/qmd) to build local full-text search indexes of your documentation, allowing AI agents to query your knowledge base programmatically.
+Optional on-device semantic search tooling located in `/scripts/qmd` utilizing [QMD](https://github.com/tobi/qmd) to build local full-text search indexes of your documentation, allowing AI agents to query your knowledge base programmatically. LEAP does not require QMD: setup skips it by default and completes even if QMD configuration fails.
 
 ---
 
@@ -109,7 +109,7 @@ For a complete explanation of the methodology, compliance requirements, and guid
 - **[LEAP Cheatsheet](kb/guide-cheatsheet.md)**: Quick reference for branch names, folders, and markdown standards.
 - **[Compliance Levels](kb/guide-compliance-levels.md)**: Essential, Standard, and Comprehensive criteria.
 - **[Markdown Formatting Standards ADR](kb/adr/leap-adr-002__markdown-formatting-standards.md)**: Detailed reasoning behind `check-md` rules.
-- **[QMD Configuration Guide](kb/guide-qmd-config.md)**: Setup instructions for semantic search.
+- **[QMD Configuration Guide](kb/guide-qmd-config.md)**: Setup instructions for optional semantic search.
 - **[Changelog](CHANGELOG.md)**: Automated release and version history driven by Conventional Commits.
 
 ---

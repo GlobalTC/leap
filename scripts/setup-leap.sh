@@ -58,7 +58,7 @@ Options:
   --skills                  Install LEAP custom skills for your AI agents
   --gitignore               Configure project's .gitignore for LEAP
   --hooks                   Install LEAP git pre-commit hook (only for LEAP repository maintainers)
-  --qmd                     Run QMD semantic search configurator
+  --qmd                     Run the optional QMD semantic search configurator
   -h, --help                Show this help message and exit
 EOF
 }
@@ -689,29 +689,27 @@ fi
 
 # 5. Configure QMD Semantic Search
 print_step "Configuring QMD Semantic Search"
-echo "QMD is an on-device semantic search engine that lets AI agents find your documentation."
+echo "QMD is an optional on-device semantic search engine that lets AI agents find your documentation. LEAP works without it."
 
-ask_yes_no "Run QMD semantic search configurator?" "y" "Registers your document collections, registers your local project with the local AI agent, and installs pre-commit hooks to keep the index updated automatically." "$OVERRIDE_QMD"
+ask_yes_no "Run QMD semantic search configurator (optional)?" "n" "Registers your document collections, registers your local project with the local AI agent, and installs pre-commit hooks to keep the index updated automatically." "$OVERRIDE_QMD"
 QMD_FAILED=false
 if [ "$PROMPT_RESULT" = "y" ]; then
   if bash "$LEAP_DIR/scripts/qmd/qmd-config" --repo-root "$REPO_ROOT" --remove-legacy; then
     print_success "QMD semantic search configured successfully."
   else
-    print_warning "QMD configuration failed or was cancelled. You can retry via 'bash $LEAP_DIR/scripts/qmd/qmd-config --repo-root $REPO_ROOT --remove-legacy'."
+    print_warning "QMD configuration failed or was cancelled. QMD is optional, so setup continues. You can retry via 'bash $LEAP_DIR/scripts/qmd/qmd-config --repo-root $REPO_ROOT --remove-legacy'."
     QMD_FAILED=true
   fi
 else
-  print_warning "Skipped QMD configuration."
+  print_warning "Skipped QMD configuration (optional)."
 fi
 
 print_step "LEAP Initialization Complete!"
+echo -e "${GREEN}${BOLD}Congratulations! Your project is now fully LEAP-ready.${NC}"
 if [ "$QMD_FAILED" = true ]; then
-  echo -e "${RED}${BOLD}LEAP Setup Incomplete (Warnings Detected)${NC}"
-  echo "  - Please fix the QMD path errors or clean up any broken pre-commit hooks before committing!"
+  print_warning "Optional QMD semantic search was not configured."
+  echo "  - If QMD left a broken pre-commit hook, remove it or fix the QMD path errors before committing."
   echo "  - You can retry QMD setup via: bash $LEAP_DIR/scripts/qmd/qmd-config --repo-root $REPO_ROOT --remove-legacy"
-  exit 1
-else
-  echo -e "${GREEN}${BOLD}Congratulations! Your project is now fully LEAP-ready.${NC}"
 fi
 
 echo -e "\nNext steps to start a new task:"
